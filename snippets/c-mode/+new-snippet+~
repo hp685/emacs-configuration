@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sock
+# key: sock
+# --
+socket(${1:domain}, ${2:socket_type}, ${3:protocol});
