@@ -1,3 +1,4 @@
+
 ;; Set default directory of the project
 
 ;; Added by Package.el.  This must come before configurations of
@@ -8,7 +9,7 @@
 
 (setq default-directory "~/Programming/socket-programming/")
 (desktop-save-mode 1)
-(setq debug-on-error t)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -16,7 +17,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yasnippet-snippets yasnippet-classic-snippets py-autopep8 js3-mode indium pylint py-yapf jedi importmagic flycheck-pyflakes flycheck-pycheckers flycheck company-jedi ac-c-headers ac-clang abl-mode anaconda-mode yapfify react-snippets))))
+    (company-ycmd company flycheck-ycmd yasnippet-snippets yasnippet-classic-snippets py-autopep8 pylint py-yapf ac-c-headers ac-clang abl-mode anaconda-mode yapfify react-snippets))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -38,14 +39,30 @@
 ;; enable line numbers for all buffers
 (global-linum-mode t)
 
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on_dot t)
-;; load js3-mode for javascript 
-(autoload 'js3-mode "js3" nil t)
-   (add-to-list 'auto-mode-alist '("\\.js$" . js3-mode))
 
 ;; run pep8 on save
 (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 
 ;; python max line length for autopep8
 (setq py-autopep8-options '("--max-line-length=80"))
+(put 'set-goal-column 'disabled nil)
+
+;;; you complete, flycheck and company
+(require 'ycmd)
+(add-hook 'after-init-hook #'global-ycmd-mode)
+(require 'company-ycmd)
+(company-ycmd-setup)
+
+(setq ycmd-server-command
+      (list "python" "-u" (file-truename "~/.emacs.d/ycmd/ycmd/")))
+
+(add-hook 'ycmd-mode-hook 'company-ycmd-setup)
+(add-hook 'ycmd-mode-hook 'flycheck-ycmd-setup)
+
+(global-company-mode)
+(global-ycmd-mode)
+
+;; speed company up
+(setq company-dabbrev-downcase 0)
+(setq company-idle-delay 0)
+
